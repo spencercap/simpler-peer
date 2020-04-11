@@ -1,14 +1,15 @@
 # simpler-peer
-how simple is simple-peer ?
+a little dev playground for [simple-peer](https://github.com/feross/simple-peer)
 
-## answer: pretty simple.
-you just gotta do the signaling yourself.
+## demo: connection flow
 
-## demo
+1. open `initiator.html`, copy the signal offer
+2. open `receiver.html`, paste that signal offer into the text area, then click generate
+3. copy the generated signal answer from `receiver.html`
+4. paste that signal answer into the text area of `initiator.html`, then click connect
+5. enjoy a margarita
 
-open `index.html#1`, copy the outgoing offer and paste in the text area of `index.html`, click submit, now they are connected.
-
-in the real world, instead of copying and pasting, you can use a websocket, some database (like firestore), or even carrier pigeon 😉
+in the real world, instead of copying and pasting signal offers and answers, you can use a websocket, some database (like firestore), or even a carrier pigeon 😉 for the signaling.
 
 ## version
 
