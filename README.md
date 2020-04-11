@@ -1,7 +1,13 @@
 # simpler-peer
 a little dev playground for [simple-peer](https://github.com/feross/simple-peer)
 
-## demo: connection flow
+## demo
+
+[initiator](https://spencercap.github.io/simpler-peer/initiator.html)
+
+[receiver](https://spencercap.github.io/simpler-peer/receiver.html)
+
+## connection flow
 
 1. open `initiator.html`, copy the signal offer
 2. open `receiver.html`, paste that signal offer into the text area, then click generate
