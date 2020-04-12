@@ -69,7 +69,10 @@
         var p = new SimplePeer({
           initiator: true,
           trickle: false,
-          stream: stream
+          stream: stream,
+          config: { iceServers: [
+            { urls: 'stun:stunner.tables.chat' }
+          ]}
         })
 
         p.on('error', err => {
