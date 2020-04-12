@@ -44,7 +44,7 @@
       // get stream
       navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: false
+        audio: true
       }).then(gotMedia).catch(() => {})
 
       function setMyStream(stream) {
