@@ -44,7 +44,11 @@
     <script>
       // get stream
       navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: {
+          width: { exact: 320 },
+          height: { exact: 240 },
+          frameRate: { ideal: 24, max: 30 }
+        },
         audio: true
       }).then(gotMedia).catch(() => {})
 
@@ -68,7 +72,10 @@
           stream: stream
         })
 
-        p.on('error', err => console.log('error', err))
+        p.on('error', err => {
+          console.log('error', err)
+          console.log(err.code)
+        })
 
         p.on('signal', data => {
           console.log('SIGNAL', JSON.stringify(data))
