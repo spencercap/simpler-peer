@@ -6,40 +6,104 @@
         word-wrap: break-word;
         white-space: normal;
       }
+      video {
+        height: 150px;
+      }
     </style>
+
+    <div style="display: flex;">
+      <p>my video:</p>
+      <video
+        id="my-video"
+        autoplay
+        muted
+        playsinline
+      ></video>
+
+      <p>peer video:</p>
+      <video
+        id="peer-video"
+        autoplay
+        muted
+        playsinline
+        ></video>
+    </div>
+
     <form>
       <p>some signal offer input:</p>
       <textarea id="incoming"></textarea>
       <button type="submit">generate</button>
     </form>
-    <p>signal answer (to send back):</p>
-    <pre id="outgoing"></pre>
+
+    <div>
+      <p>signal answer (to send back):</p>
+      <textarea id="outgoing" readonly></textarea>
+    </div>
+
     <script src="./js/simplepeer.min.js"></script>
     <script>
-      const p = new SimplePeer({
-        trickle: false
-      })
+      // get stream
+      navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false
+      }).then(gotMedia).catch(() => {})
 
-      p.on('error', err => console.log('error', err))
+      function setMyStream(stream) {
+        // console.log('setMyStream', stream)
 
-      p.on('signal', data => {
-        console.log('SIGNAL', JSON.stringify(data))
-        document.querySelector('#outgoing').textContent = JSON.stringify(data)
-      })
+        var video = document.querySelector('#my-video')
 
-      document.querySelector('form').addEventListener('submit', ev => {
-        ev.preventDefault()
-        p.signal(JSON.parse(document.querySelector('#incoming').value))
-      })
+        if ('srcObject' in video) {
+          video.srcObject = stream
+        } else {
+          video.src = window.URL.createObjectURL(stream) // for older browsers
+        }
+      }
 
-      p.on('connect', () => {
-        console.log('CONNECT')
-        p.send('whatever' + Math.random())
-      })
+      function gotMedia (stream) {
+        setMyStream(stream)
 
-      p.on('data', data => {
-        console.log('data: ' + data)
-      })
+        var p = new SimplePeer({
+          trickle: false,
+          stream: stream
+        })
+
+        p.on('error', err => console.log('error', err))
+
+        p.on('signal', data => {
+          console.log('SIGNAL', JSON.stringify(data))
+
+          // some other signals come in when adding a stream to the mix, so get the right one
+          if (data.type == 'answer') {
+            document.querySelector('#outgoing').textContent = JSON.stringify(data)
+          }
+        })
+
+        document.querySelector('form').addEventListener('submit', ev => {
+          ev.preventDefault()
+          p.signal(JSON.parse(document.querySelector('#incoming').value))
+        })
+
+        p.on('connect', () => {
+          console.log('CONNECT')
+          p.send('receiver connected')
+        })
+
+        p.on('data', data => {
+          console.log('data: ' + data)
+        })
+
+        p.on('stream', stream => {
+          // got remote video stream, now let's show it in a video tag
+          var video = document.querySelector('#peer-video')
+
+          if ('srcObject' in video) {
+            video.srcObject = stream
+          } else {
+            video.src = window.URL.createObjectURL(stream) // for older browsers
+          }
+        })
+      }
     </script>
   </body>
 </html>
